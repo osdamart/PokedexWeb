@@ -1,0 +1,78 @@
+<mat-sidenav-container >
+
+    <mat-sidenav #sidenav mode="side" opened >
+        
+        <!-- Sidenav here: -->
+        <mat-selection-list [multiple]="false">
+            <mat-list-option *ngFor="let tipo of tipos" style='color:{{tipo.color}};' [routerLink]="tipo.route" >
+                <div style="text-align: center;font-size: small;">
+                    <span ><b>{{tipo.name | uppercase }}</b></span>
+                </div>
+            </mat-list-option>
+        </mat-selection-list>
+        <!-- <button mat-button
+                (click)="sidenav.toggle()">Toggle sidenav
+        </button> -->
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <!-- All content here: -->
+        <div class="contenido">
+            <mat-grid-list rows="3" cols="2" rowHeight="2.5:1" *ngFor="let pkmn of listaPokemons">
+                
+                <mat-grid-tile >
+                    <!-- INFO GENERAL: -->
+                    <mat-card class="card-padre">
+
+                        <b><div class="numero">
+                            #{{pkmn.id}}
+                        </div></b>
+                        <img class="img" [src]="pkmn.sprites.front_default">
+                                           
+                        <div id="circle1">
+                            <b>{{pkmn.height}}0 cm</b>
+                        </div>
+                        <div id="circle2">
+                            <b>{{pkmn.weight}} lbs</b>
+                        </div>
+                        <div class="nombre"><b>{{pkmn.name}}</b></div>
+                        <div class="tipo">
+                        <span *ngFor="let type of pkmn.types; let isLast=last" >
+                            <b>{{type.type.name}}{{!isLast?' • ':''}}</b>
+                        </span></div>
+                        <div class="skills">
+                            <span *ngFor="let ability of pkmn.abilities; let isLast=last" >
+                                <b>{{ability.ability.name}}{{!isLast?', ':''}}</b>
+                            </span></div>
+                    </mat-card>
+                    
+                </mat-grid-tile>
+                <mat-grid-tile >
+                    <!-- STATS: -->
+                    <div class="internalGrid" >
+                        <mat-grid-list cols="6" rowHeight="3:1" *ngFor="let stat of pkmn.stats.slice().reverse()" >
+                            <mat-grid-tile colspan="2" class="stats">
+                                <span>
+                                    <b>{{stat.stat.name}}</b>
+                                </span>
+                            </mat-grid-tile>
+                            <mat-grid-tile colspan="1">
+                                <span>
+                                    {{stat.base_stat}}
+                                </span>
+                            </mat-grid-tile>
+                            <mat-grid-tile colspan="3">
+                                <mat-progress-bar mode="determinate" value="{{stat.base_stat}}"></mat-progress-bar><br>
+                            </mat-grid-tile>
+    
+                        </mat-grid-list>
+                    </div>
+                    
+
+                    
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+    </mat-sidenav-content>
+
+</mat-sidenav-container>
