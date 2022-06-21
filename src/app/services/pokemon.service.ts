@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -11,10 +12,19 @@ export class PokemonService {
 
   constructor(private http: HttpClient) { }
 
-  getPokemons(index: any){
-    return this.http.get<any>(`${this.baseUrl}/pokemon/${index}`);
+  async getPokemons(index: any){
+    return await this.http.get<any>(`${this.baseUrl}/pokemon/${index}`).toPromise();
   }
 
+  getPokemonData(offset: number, limit: number = 20){
+    return this.http.get<any>(`${this.baseUrl}/pokemon?offset=${offset}&limit=${limit}`).pipe(
+      map(result => {
+        return result['results']
+      })    
+    );    
+  }
+
+  
 
 
 }

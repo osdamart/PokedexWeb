@@ -4,8 +4,8 @@
         
         <!-- Sidenav here: -->
         <mat-selection-list [multiple]="false">
-            <mat-list-option *ngFor="let tipo of tipos" style='color:{{tipo.color}};' [routerLink]="tipo.route" >
-                <div style="text-align: center;font-size: small;">
+            <mat-list-option *ngFor="let tipo of tipos" [class]="tipo.name" [routerLink]="tipo.route" (click)="filtrar(tipo.name)">
+                <div style="text-align: center;font-size: small; ">
                     <span ><b>{{tipo.name | uppercase }}</b></span>
                 </div>
             </mat-list-option>
@@ -15,30 +15,38 @@
         </button> -->
     </mat-sidenav>
 
-    <mat-sidenav-content>
+    <mat-sidenav-content (scroll)="onScroll($event)">
         <!-- All content here: -->
-        <div class="contenido">
-            <mat-grid-list rows="3" cols="2" rowHeight="2.5:1" *ngFor="let pkmn of listaPokemons">
+        <div *ngIf="cargando" class="soloTxt">
+            <br><mat-progress-bar mode="indeterminate" color="primary"></mat-progress-bar><br>
+            Cargando, porfavor espere...
+        </div>
+        <div *ngIf="noHay" class="soloTxt">
+            <br>┏༼ ◉╭╮◉༽┓<br>
+            No se encontraron pokemons con este tipo
+        </div>
+        <div *ngIf='!noHay && !cargando' class="contenido" >
+            <mat-grid-list cols="2" rowHeight="2.5:1" *ngFor="let pkmn of listaPokemons">
                 
                 <mat-grid-tile >
                     <!-- INFO GENERAL: -->
                     <mat-card class="card-padre">
 
-                        <b><div class="numero">
-                            #{{pkmn.id}}
+                        <b><div class="numero" >
+                            #{{pkmn.id<100?'0':''}}{{pkmn.id<10?'0':''}}{{pkmn.id}}
                         </div></b>
                         <img class="img" [src]="pkmn.sprites.front_default">
                                            
                         <div id="circle1">
-                            <b>{{pkmn.height}}0 cm</b>
+                            <b>{{pasaraMetros(pkmn.height)}}m</b>
                         </div>
                         <div id="circle2">
-                            <b>{{pkmn.weight}} lbs</b>
+                            <b>{{pasaraKilos(pkmn.weight)}}kg</b>
                         </div>
                         <div class="nombre"><b>{{pkmn.name}}</b></div>
                         <div class="tipo">
                         <span *ngFor="let type of pkmn.types; let isLast=last" >
-                            <b>{{type.type.name}}{{!isLast?' • ':''}}</b>
+                            <b><span [class]="type.type.name">{{type.type.name}}</span><span class="separador" >{{!isLast?' • ':''}}</span></b>
                         </span></div>
                         <div class="skills">
                             <span *ngFor="let ability of pkmn.abilities; let isLast=last" >
@@ -62,7 +70,7 @@
                                 </span>
                             </mat-grid-tile>
                             <mat-grid-tile colspan="3">
-                                <mat-progress-bar mode="determinate" value="{{stat.base_stat}}"></mat-progress-bar><br>
+                                <mat-progress-bar mode="determinate" [color]="cambiarColor(stat.base_stat)" value="{{stat.base_stat}}"></mat-progress-bar><br>
                             </mat-grid-tile>
     
                         </mat-grid-list>
